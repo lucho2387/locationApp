@@ -8,15 +8,14 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 
 const NewPlace = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
   const [coords, setCoords] = useState(null);
-  const dispatch = useDispatch();
+
 
   const onHandlerSubmit = () => {
-    // dispatch(savePlace(title));
-    dispatch(addPlace({ title, image }));
-    // Vuelve a la pantalla anterior
+    dispatch(savePlace(title, image, coords));
     navigation.goBack();
   };
 
@@ -29,8 +28,8 @@ const NewPlace = ({ navigation }) => {
     // console.warn(uri);
   };
   const onLocation = (location) => {
-    // setCoords(location);
-    console.warn(location)
+    setCoords(location);
+    // console.warn(location)
   };
   return (
     <ScrollView style={styles.container}>

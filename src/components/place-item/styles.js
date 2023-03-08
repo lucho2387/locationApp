@@ -27,4 +27,9 @@ export const styles = StyleSheet.create({
     color: colors.color1,
     marginBottom: 10,
   },
+  address: {
+    fontSize: 12,
+    color: colors.color1,
+    marginBottom: 10,
+  },
 });

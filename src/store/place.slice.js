@@ -1,4 +1,7 @@
+import { getPlaces, insertPlace } from "../db";
+
 import Place from "../models/places";
+import { URL_GEOCODING } from "../utils/maps";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -11,16 +14,62 @@ const placeSlice = createSlice({
   reducers: {
     addPlace: (state, action) => {
       const newPlace = new Place(
-        Date.now().toString(),
+        action.payload.id.toString(),
         action.payload.title,
         action.payload.image,
+        action.payload.address,
+        action.payload.coords,
       );
       state.places.push(newPlace);
     },
+    setPlaces: (state, action) => {
+      state.places = action.payload;
+    }
   },
 });
 
-export const { addPlace } = placeSlice.actions;
+export const { addPlace, setPlaces } = placeSlice.actions;
+
+export const savePlace = (title, image, coords) => {
+  return async(dispatch) => {
+    try{
+      const response = await fetch(URL_GEOCODING(coords?.lat, coords?.lng));
+
+      if(!response.ok) {
+        throw new Error("No se ha podido copnectar con el servicio de geolocalizacion")
+      }
+
+      const data = await response.json()
+  
+      if(!data.results) {
+        throw new Error("No se ha podido encontrar la direccion")
+      }
+
+      const address = data.results[0].formatted_address;
+      // Ibsertamos en la tabla places con sqlite
+      const result = await insertPlace(title, image, address, coords)
+      console.warn("result", result)
+      
+      dispatch(addPlace({id: result.insertId, title, image, address, coords}))
+      
+    } catch (error) {
+      console.log(error);
+    }
+  } 
+}
+
+export const loadPlace = () => {
+  return async (dispatch) => {
+    try {
+      const result = await getPlaces();
+      dispatch(setPlaces(result?.rows?._array))
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+}
 
 
-export default placeSlice.reducer;
+export default placeSlice.reducer
+

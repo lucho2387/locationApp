@@ -4,11 +4,9 @@ import { Alert, Button, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
+import MapPreview from "../map-preview/index";
 import colors from "../../utils/colors";
 import { styles } from "./styles";
-
-// import MapPreview from "../map-preview/index";
-
 
 const LocationSelector = ({ onLocation, navigation }) => {
 //   const navigation = useNavigation();
@@ -56,17 +54,9 @@ const LocationSelector = ({ onLocation, navigation }) => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.preview}>
-            {!pickedLocation ? (
-                 <Text style={styles.text}>No hay ubicacion seleccionada</Text>
-                ) : (
-                <Text >{`latitud: ${pickedLocation.lat},  longitud: ${pickedLocation.lng}`}</Text>
-                )
-            }               
-        </View>
-      {/* <MapPreview location={pickedLocation} style={styles.preview}>
+      <MapPreview location={pickedLocation} style={styles.preview}>
         <Text style={styles.text}>No hay ubicacion seleccionada</Text>
-      </MapPreview> */}
+      </MapPreview>
       <Button title="Seleccionar ubicacion" onPress={onHandleGetLocation} color={colors.color1} />
       <Button
         title="Seleccionar desde mapa"
